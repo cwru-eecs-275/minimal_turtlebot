@@ -49,7 +49,7 @@ struct turtlebotInputs
 	uint8_t sensor2State; 
 	
 	//laserscan data
-	std::vector<float> ranges;
+	float ranges[640];
 	float minAngle; 
 	float maxAngle; 
 	float angleIncrement; 
