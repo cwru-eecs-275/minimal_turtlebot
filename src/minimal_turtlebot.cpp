@@ -12,9 +12,8 @@ uint8_t soundValueUpdateCounter = 0;
   
 turtlebotInputs localTurtleBotInputs; 
 
-void odomCallback(const geometry_msgs::PoseWithCovarianceStamped& pose) 
+void odomCallback(const nav_msgs::Odometry& pose) 
 { 
-	
 	localTurtleBotInputs.x = pose.pose.pose.position.x; 
 	localTurtleBotInputs.y = pose.pose.pose.position.y; 
 	localTurtleBotInputs.z_angle = pose.pose.pose.orientation.z; 
@@ -25,7 +24,6 @@ void odomCallback(const geometry_msgs::PoseWithCovarianceStamped& pose)
 
 void coreCallback(const kobuki_msgs::SensorState& sensor_state) 
 { 
-	
 	localTurtleBotInputs.battVoltage = sensor_state.battery; 
 	localTurtleBotInputs.battVoltage = localTurtleBotInputs.battVoltage*0.1; 
 	
@@ -33,7 +31,6 @@ void coreCallback(const kobuki_msgs::SensorState& sensor_state)
 }  
 void imuCallback(const sensor_msgs::Imu& imu_data) 
 { 
-	
 	localTurtleBotInputs.linearAccelX = imu_data.linear_acceleration.x; 
 	localTurtleBotInputs.linearAccelY = imu_data.linear_acceleration.y; 
 	localTurtleBotInputs.linearAccelZ = imu_data.linear_acceleration.z; 
@@ -177,7 +174,7 @@ int main(int argc, char **argv)
   ros::Subscriber my_cliff_subscription= n.subscribe("mobile_base/events/cliff",1,cliffCallback); 
   ros::Subscriber my_imu_subscription= n.subscribe("mobile_base/sensors/imu_data_raw",1,imuCallback); 
   ros::Subscriber my_core_subscription= n.subscribe("mobile_base/sensors/core",1,coreCallback); 
-  ros::Subscriber my_odom_subscription= n.subscribe("odom_combined",1,odomCallback); 
+  ros::Subscriber my_odom_subscription= n.subscribe("odom",10,odomCallback); 
   
   //We don't need color image or depth images for this semester, let's just look at laser scan topics
   //ros::Subscriber colorImageSubscription= n.subscribe("camera/rgb/image_rect_color",1,colorImageCallback); 

@@ -11,6 +11,7 @@
 #include<kobuki_msgs/CliffEvent.h>
 #include<kobuki_msgs/Sound.h>
 #include<kobuki_msgs/SensorState.h>
+#include<nav_msgs/Odometry.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <geometry_msgs/Twist.h>
 #include "minimal_turtlebot/turtlebot_controller.h"

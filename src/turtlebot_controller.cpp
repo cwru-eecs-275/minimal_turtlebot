@@ -10,7 +10,7 @@ void turtlebot_controller(turtlebotInputs turtlebot_inputs, uint8_t *soundValue,
 	//outputs have been set to some default values. Feel free 
 	//to change these constants to see how they impact the robot. 
 
-	*vel = 0.0; // Robot forward velocity in m/s
+	*vel = 0.2; // Robot forward velocity in m/s
 	//0.7 is max and is a lot
 	*ang_vel = 0.2;  // Robot angular velocity in rad/s
 	//0.7 is max and is a lot 
