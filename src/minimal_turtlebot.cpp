@@ -1,6 +1,6 @@
 #include "minimal_turtlebot/turtlebot_controller.h"
 
-//instantiate some special types for our commands  
+// instantiate some special types for our commands  
 kobuki_msgs::Sound soundValue; 
 geometry_msgs::Twist base_cmd;
 
@@ -11,15 +11,30 @@ float localAngularSpeed=0.0;
 uint8_t soundValueUpdateCounter = 0; 
   
 turtlebotInputs localTurtleBotInputs; 
+bool amcl_present = 0; 
 
-void odomCallback(const nav_msgs::Odometry& pose) 
+uint32_t startUpTimer = 0; 
+
+void amclCallback(const geometry_msgs::PoseWithCovarianceStamped& pose) 
 { 
+	amcl_present = 1; 
 	localTurtleBotInputs.x = pose.pose.pose.position.x; 
 	localTurtleBotInputs.y = pose.pose.pose.position.y; 
 	localTurtleBotInputs.z_angle = pose.pose.pose.orientation.z; 
 	localTurtleBotInputs.orientation_omega = pose.pose.pose.orientation.w; 
 	
-	
+}  
+
+void odomCallback(const nav_msgs::Odometry& pose) 
+{ 
+	if (~ amcl_present && startUpTimer > 150)
+	{
+		localTurtleBotInputs.x = pose.pose.pose.position.x; 
+		localTurtleBotInputs.y = pose.pose.pose.position.y; 
+		localTurtleBotInputs.z_angle = pose.pose.pose.orientation.z; 
+		localTurtleBotInputs.orientation_omega = pose.pose.pose.orientation.w; 
+	}
+		
 }  
 
 void coreCallback(const kobuki_msgs::SensorState& sensor_state) 
@@ -55,7 +70,7 @@ void scanCallback(const sensor_msgs::LaserScan& scan_data)
 	localTurtleBotInputs.maxAngle=scan_data.angle_max; 
 	localTurtleBotInputs.angleIncrement=scan_data.angle_increment; 
 	localTurtleBotInputs.numPoints=640;
-	//ROS_INFO("number scan points is: %i",localTurtleBotInputs.numPoints); 
+	// ROS_INFO("number scan points is: %i",localTurtleBotInputs.numPoints); 
 	
 } 
 
@@ -106,7 +121,7 @@ void depthImageCallback(const sensor_msgs::Image& image_data_holder)
 	{
 		ROS_INFO("depth image height: %u",image_data_holder.height);
 		ROS_INFO("depth image width: %u",image_data_holder.width);
-		//ROS_INFO("depth image encoding: %s",image_data_holder.encoding.c_str());
+		// ROS_INFO("depth image encoding: %s",image_data_holder.encoding.c_str());
 		depthImageInfoCounter=0; 
 	}
 	else
@@ -162,31 +177,37 @@ int main(int argc, char **argv)
   ros::init(argc,argv,"my_minimal_subscriber"); //name this node 
   // when this compiled code is run, ROS will recognize it as a node called "minimal_subscriber" 
   ros::NodeHandle n; // need this to establish communications with our new node 
-  //create a Subscriber object and have it subscribe to the topic "topic1" 
+  // create a Subscriber object and have it subscribe to the topic "topic1" 
   // the function "myCallback" will wake up whenever a new message is published to topic1 
   // the real work is done inside the callback function 
   
   ros::Rate naptime(10); // use to regulate loop rate 
   
-  //subscribe to wheel drop and bumper messages
+  // subscribe to wheel drop and bumper messages
   ros::Subscriber my_wheel_drop_subscription= n.subscribe("mobile_base/events/wheel_drop",1,wheelDropCallBack); 
   ros::Subscriber my_bumper_subscription= n.subscribe("mobile_base/events/bumper",1,bumperMessageCallback); 
   ros::Subscriber my_cliff_subscription= n.subscribe("mobile_base/events/cliff",1,cliffCallback); 
   ros::Subscriber my_imu_subscription= n.subscribe("mobile_base/sensors/imu_data_raw",1,imuCallback); 
   ros::Subscriber my_core_subscription= n.subscribe("mobile_base/sensors/core",1,coreCallback); 
   ros::Subscriber my_odom_subscription= n.subscribe("odom",10,odomCallback); 
+  ros::Subscriber my_amcl_subscription= n.subscribe("amcl_pose",10,amclCallback); 
   
-  //We don't need color image or depth images for this semester, let's just look at laser scan topics
-  //ros::Subscriber colorImageSubscription= n.subscribe("camera/rgb/image_rect_color",1,colorImageCallback); 
-  //ros::Subscriber depthSubscription= n.subscribe("camera/depth/image_raw",1,depthImageCallback); 
+  // We don't need color image or depth images for this semester, let's just look at laser scan topics
+  // ros::Subscriber colorImageSubscription= n.subscribe("camera/rgb/image_rect_color",1,colorImageCallback); 
+  // ros::Subscriber depthSubscription= n.subscribe("camera/depth/image_raw",1,depthImageCallback); 
   
   ros::Subscriber scanSubscription= n.subscribe("scan",1,scanCallback); 
   
-  //publish sound and command vel messages 
+  // publish sound and command vel messages 
   
   ros::Publisher my_publisher_object = n.advertise<kobuki_msgs::Sound>("mobile_base/commands/sound", 1);
   ros::Publisher cmd_vel_pub_ = n.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1);
   
+  // initialize to nan to start
+  localTurtleBotInputs.x=std::numeric_limits<float>::quiet_NaN();; 
+  localTurtleBotInputs.y=std::numeric_limits<float>::quiet_NaN();; 
+  localTurtleBotInputs.z_angle=std::numeric_limits<float>::quiet_NaN();; 
+  localTurtleBotInputs.orientation_omega=std::numeric_limits<float>::quiet_NaN();; 
 
   
   while(ros::ok())
@@ -208,6 +229,13 @@ int main(int argc, char **argv)
 	{
 		soundValueUpdateCounter++;
 	}
+	
+	if (startUpTimer < 1000)
+	{
+		startUpTimer++; 
+	}
+	
+	//else do nothing 
 	
 	cmd_vel_pub_.publish(base_cmd);
 	

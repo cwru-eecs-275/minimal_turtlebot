@@ -17,6 +17,10 @@ void turtlebot_controller(turtlebotInputs turtlebot_inputs, uint8_t *soundValue,
   
 	*soundValue = 0;
   
+	ROS_INFO("X: %f:", turtlebot_inputs.x); 
+	ROS_INFO("Y: %f:", turtlebot_inputs.y); 
+	ROS_INFO("Z: %f:", turtlebot_inputs.z_angle); 
+	ROS_INFO("Omega: %f:", turtlebot_inputs.orientation_omega); 
 	//here are the various sound value enumeration options
 	//soundValue.OFF
 	//soundValue.RECHARGE
