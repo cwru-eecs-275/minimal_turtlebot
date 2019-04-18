@@ -13,6 +13,7 @@
 #include<kobuki_msgs/SensorState.h>
 #include<nav_msgs/Odometry.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Twist.h>
 #include "minimal_turtlebot/turtlebot_controller.h"
 #include <sensor_msgs/CompressedImage.h>
@@ -76,14 +77,28 @@ struct turtlebotInputs
 	
 	//odom
 	
-	float x; 
-	float y; 
-	float z_angle; 
-	float orientation_omega; 
-	
-	
-	
+	// Position
+	float x;
+	float y;
+	float z;
+	// Orientation
+	float qw;
+	float qx;
+	float qy;
+	float qz; 
 };
 
-void turtlebot_controller(turtlebotInputs turtlebot_inputs, uint8_t *soundValue, float *vel, float *ang_vel);
+struct goalPose_t {
+	// Position
+	float x;
+	float y;
+	float z;
+	// Orientation
+	float qw;
+	float qx;
+	float qy;
+	float qz;
+};
+
+void turtlebot_controller(turtlebotInputs turtlebot_inputs, uint8_t *soundValue, float *vel, float *ang_vel, goalPose_t goalPose);
 #endif

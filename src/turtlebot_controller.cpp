@@ -1,7 +1,7 @@
 #include "minimal_turtlebot/turtlebot_controller.h"
 
 
-void turtlebot_controller(turtlebotInputs turtlebot_inputs, uint8_t *soundValue, float *vel, float *ang_vel)
+void turtlebot_controller(turtlebotInputs turtlebot_inputs, uint8_t *soundValue, float *vel, float *ang_vel, goalPose_t goalPose)
  {
 	//Place your code here! you can access the left / right wheel 
 	//dropped variables declared above, as well as information about
