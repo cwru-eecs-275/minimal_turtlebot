@@ -18,13 +18,13 @@ uint32_t startUpTimer = 0;
 
 void poseCallback(const geometry_msgs::PoseStamped& pose) 
 { 
-	goalPose.x = pose.pose.position.x; 
-	goalPose.y = pose.pose.position.y; 
-	goalPose.z = pose.pose.position.z; 
-	goalPose.qw = pose.pose.orientation.w; 
-	goalPose.qx = pose.pose.orientation.x; 
-	goalPose.qy = pose.pose.orientation.y; 
-	goalPose.qz = pose.pose.orientation.z; 
+	goalPose.pose_x = pose.pose.position.x; 
+	goalPose.pose_y = pose.pose.position.y; 
+	goalPose.pose_z = pose.pose.position.z; 
+	goalPose.quat_w = pose.pose.orientation.w; 
+	goalPose.quat_x = pose.pose.orientation.x; 
+	goalPose.quat_y = pose.pose.orientation.y; 
+	goalPose.quat_z = pose.pose.orientation.z; 
 }  
 
 void amclCallback(const geometry_msgs::PoseWithCovarianceStamped& pose) 
@@ -230,12 +230,20 @@ int main(int argc, char **argv)
   localTurtleBotInputs.qy=std::numeric_limits<float>::quiet_NaN(); 
   localTurtleBotInputs.qz=std::numeric_limits<float>::quiet_NaN(); 
 
+  goalPose.pose_x = std::numeric_limits<float>::quiet_NaN();
+  goalPose.pose_y = std::numeric_limits<float>::quiet_NaN();
+  goalPose.pose_z = std::numeric_limits<float>::quiet_NaN();
+  goalPose.quat_w = std::numeric_limits<float>::quiet_NaN();
+  goalPose.quat_x = std::numeric_limits<float>::quiet_NaN();
+  goalPose.quat_y = std::numeric_limits<float>::quiet_NaN();
+  goalPose.quat_z = std::numeric_limits<float>::quiet_NaN();
+
   
   while(ros::ok())
   {
 	ros::spinOnce();
 	localTurtleBotInputs.nanoSecs = ros::Time::now().toNSec();
-	turtlebot_controller(localTurtleBotInputs, &localSoundValue, &localLinearSpeed, &localAngularSpeed, goalPose);
+	turtlebot_controller(localTurtleBotInputs, &localSoundValue, &localLinearSpeed, &localAngularSpeed);
 	
 	soundValue.value=localSoundValue;
 	base_cmd.linear.x=localLinearSpeed;
