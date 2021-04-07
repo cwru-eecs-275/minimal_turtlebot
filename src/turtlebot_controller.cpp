@@ -16,6 +16,12 @@ void turtlebot_controller(turtlebotInputs turtlebot_inputs, uint8_t *soundValue,
 	//0.7 is max and is a lot 
   
 	*soundValue = 0;
+
+	float x, y;
+
+	GET_GOAL(x, y);
+
+	ROS_INFO("Goal Pose X = %2.2f, Y = %2.2f", x, y);
   
 	//here are the various sound value enumeration options
 	//soundValue.OFF
