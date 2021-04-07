@@ -174,7 +174,7 @@ void bumperMessageCallback(const kobuki_msgs::BumperEvent& bumper_data_holder)
 int main(int argc, char **argv) 
 {
 
-  ros::init(argc,argv,"my_minimal_subscriber"); //name this node 
+  ros::init(argc,argv,"minimal_turtlebot"); //name this node 
   // when this compiled code is run, ROS will recognize it as a node called "minimal_subscriber" 
   ros::NodeHandle n; // need this to establish communications with our new node 
   // create a Subscriber object and have it subscribe to the topic "topic1" 
