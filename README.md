@@ -90,6 +90,12 @@ The simulation and the node can be started simultaneously:
 roslaunch minimal_turtlebot minimal_turtlebot.launch &
 ```
 
+In the event another world is launch and the Turtlebot as it functions here is desired in that world, it can be spawned into an existy Gazebo simulation.
+
+```
+roslaunch minimal_turtlebot spawn_turtlebot.launch
+```
+
 ### Editing the Node
 
 The node controlling the turtlebot is structured so that all the "intelligence" is in one function located in the `turtlebot_controller.cpp` file.  
