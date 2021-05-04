@@ -15,21 +15,24 @@ void turtlebot_controller(turtlebotInputs turtlebot_inputs, uint8_t *soundValue,
 	*ang_vel = 0.2;  // Robot angular velocity in rad/s
 	//0.7 is max and is a lot 
   
-	*soundValue = 0;
 
 	float x, y;
 
 	GET_GOAL(x, y);
 
-	ROS_INFO("Goal Pose X = %2.2f, Y = %2.2f", x, y);
+	// Send a debug message throttled to 1 Hz.
+	ROS_INFO_THROTTLE(1, "Goal Pose X = %2.2f, Y = %2.2f", x, y);
+	// Send a debug message every loop.
+	// ROS_INFO("Goal Pose X = %2.2f, Y = %2.2f", x, y);
   
 	//here are the various sound value enumeration options
-	//soundValue.OFF
-	//soundValue.RECHARGE
-	//soundValue.BUTTON
-	//soundValue.ERROR
-	//soundValue.CLEANINGSTART
-	//soundValue.CLEANINGEND 
+	//SOUND_OFF
+	//SOUND_RECHARGE
+	//SOUND_BUTTON
+	//SOUND_ERROR
+	//SOUND_CLEANINGSTART
+	//SOUND_CLEANINGEND 
+	*soundValue = SOUND_OFF;
 
 }
 

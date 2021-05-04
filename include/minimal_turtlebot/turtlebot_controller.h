@@ -1,31 +1,32 @@
-#ifndef TURTLEBOT_CONTROLLER
-#define TURTLEBOT_CONTROLLER
+// Common mechanism to prevent recursive including of file
+#ifndef TURTLEBOT_CONTROLLER_H
+#define TURTLEBOT_CONTROLLER_H
 
-#include <stdint.h>
-#include <sensor_msgs/Image.h>
+#include <cstdlib>
+#include <cstdint>
+#include <string>
+#include <vector>
+#include <cmath>
 
-#include<ros/ros.h> 
-#include<std_msgs/Float64.h> 
-#include<kobuki_msgs/WheelDropEvent.h>
-#include<kobuki_msgs/BumperEvent.h>
-#include<kobuki_msgs/CliffEvent.h>
-#include<kobuki_msgs/Sound.h>
-#include<kobuki_msgs/SensorState.h>
-#include<nav_msgs/Odometry.h>
+#include <ros/ros.h> 
+#include <angles/angles.h>
+
+#include <std_msgs/Float64.h> 
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Twist.h>
-#include "minimal_turtlebot/turtlebot_controller.h"
+#include <sensor_msgs/Image.h>
 #include <sensor_msgs/CompressedImage.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/LaserScan.h>
-#include <stdlib.h>
-#include <string>
-#include <vector>
-#include <math.h>
-#include <cmath>
+#include <nav_msgs/Odometry.h>
 
+#include <kobuki_msgs/WheelDropEvent.h>
+#include <kobuki_msgs/BumperEvent.h>
+#include <kobuki_msgs/CliffEvent.h>
+#include <kobuki_msgs/Sound.h>
+#include <kobuki_msgs/SensorState.h>
 
 
 struct turtlebotInputs
@@ -105,4 +106,14 @@ void turtlebot_controller(turtlebotInputs turtlebot_inputs, uint8_t *soundValue,
 extern goalPose_t goalPose;
 
 #define GET_GOAL(x, y) {x = goalPose.pose_x; y = goalPose.pose_y;}
-#endif
+
+#define SOUND_OFF kobuki_msgs::Sound::OFF
+#define SOUND_RECHARGE kobuki_msgs::Sound::RECHARGE
+#define SOUND_BUTTON kobuki_msgs::Sound::BUTTON
+#define SOUND_ERROR kobuki_msgs::Sound::ERROR
+#define SOUND_CLEANINGSTART kobuki_msgs::Sound::CLEANINGSTART
+#define SOUND_CLEANINGEND kobuki_msgs::Sound::CLEANINGEND
+
+static double (*shortest_angular_distance)(double, double) = angles::shortest_angular_distance;
+
+#endif // TURTLEBOT_CONTROLLER_H
